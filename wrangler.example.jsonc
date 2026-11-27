@@ -1,0 +1,26 @@
+{
+  // Copy to wrangler.jsonc and fill in. wrangler.jsonc is not committed (one deployment per owner).
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "heddleway-calendar",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-20",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  // The styles are bundled as text and served by the Worker.
+  "rules": [{ "type": "Text", "globs": ["**/client/*.css"], "fallthrough": true }],
+  // Only the connections (grants) are kept; events are read when the page opens (docs/adr/0001, decision 3).
+  "d1_databases": [{ "binding": "DB", "database_name": "heddleway-calendar", "database_id": "REPLACE_WITH_DATABASE_ID", "migrations_dir": "migrations" }],
+  "vars": {
+    // Public origin of this Worker, without a trailing slash. The client ID is PUBLIC_URL + "/client.json".
+    "PUBLIC_URL": "http://localhost:8787",
+    // The owner's own sign-in to this tool (docs/adr/0002, decision 3). "google" or "entra".
+    "IDP_TYPE": "google",
+    "OIDC_ISSUER": "https://accounts.google.com",
+    "OIDC_CLIENT_ID": "REPLACE_WITH_CLIENT_ID",
+    // Comma-separated. Only these addresses can sign in.
+    "ALLOWED_EMAILS": "",
+    // Offered on the connections page: "name|https://gateway.example.com", comma-separated.
+    "GATEWAYS": ""
+  }
+  // Secrets (wrangler secret put): OIDC_CLIENT_SECRET, SESSION_SECRET (openssl rand -base64 32).
+}
